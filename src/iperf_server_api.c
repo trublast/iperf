@@ -130,6 +130,14 @@ iperf_accept(struct iperf_test *test)
             return -1;
         }
 
+        struct timeval tv;
+        tv.tv_sec = 3;
+        tv.tv_usec = 0;
+        if (setsockopt(test->ctrl_sck, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv)) {
+            i_errno = IESETUSERTIMEOUT;
+            return -1;
+        }
+
 #if defined(HAVE_TCP_USER_TIMEOUT)
         int opt;
         if ((opt = test->settings->snd_timeout)) {
